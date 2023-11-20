@@ -4,18 +4,42 @@ const bcrypt = require('bcrypt');
 
 
 exports.signup = (req, res, next) => {
-    bcrypt.hash(req.body.password, 10)
-      .then(hash => {
-        const user = new User({
-          email: req.body.email,
-          password: hash
-        });
-        user.save()
-          .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
-          .catch(error => res.status(400).json({ error }));
-      })
-      .catch(error => res.status(500).json({ error }));
-  };
+
+    // checking the format of the email address
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(req.body.email)) {
+        return res.status(400).json({ error: 'Adresse email invalide.' });
+    };
+
+    // checking the number of characters in the password 
+    if (req.body.password.length < 8) {
+        return res.status(400).json({ error: 'Le mot de passe doit avoir au moins 8 caractères.' });
+    };
+
+    // checking if the user is already registered
+    User.findOne({ email: req.body.email })
+    .then(existingUser => {
+        if (existingUser) {
+            return res.status(400).json({ error: 'L\'adresse email est déjà utilisée.' });
+        } else {
+            // hashing password
+            bcrypt.hash(req.body.password, 10)
+                .then(hash => {
+                    const user = new User({
+                        email: req.body.email,
+                        password: hash
+                    });
+
+                    // saving user in db
+                    user.save()
+                        .then(() => res.status(201).json({ message: 'Utilisateur créé !' }))
+                        .catch(error => res.status(400).json({ error }));
+                })
+                .catch(error => res.status(500).json({ error }));
+        }
+    })
+    .catch(error => res.status(500).json({ error }));
+};
 
 exports.login = (req, res, next) => {
     User.findOne({ email: req.body.email })
