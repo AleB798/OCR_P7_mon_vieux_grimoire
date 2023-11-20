@@ -4,21 +4,22 @@ const router = express.Router();
 //Import Middelware
 const auth = require('../middleware/auth');
 const multer = require('../middleware/multer-config');
+const sharp = require('../middleware/sharp-config');
 
 //Import Controller
 const bookCtrl = require('../controllers/book');
 
 // POST
-router.post('/', auth, multer, bookCtrl.createBook);
-//router.post('/:id/rating', auth, bookCtrl.rateBook);
+router.post('/', auth, multer, sharp, bookCtrl.createBook);
+router.post('/:id/rating', auth, bookCtrl.rateBook);
 
 //GET
-router.get('/:id', bookCtrl.getOneBook);
 router.get('/', bookCtrl.getAllBooks);
-//router.get('/bestrating', bookCtrl.getBestRatedBooks);
+router.get('/bestrating', bookCtrl.getBestBooks);
+router.get('/:id', bookCtrl.getOneBook);
 
 //PUT
-router.put('/:id', auth, multer, bookCtrl.modifyBook);
+router.put('/:id', auth, multer, sharp, bookCtrl.modifyBook);
 
 //DELETE
 router.delete('/:id', auth, bookCtrl.deleteBook);
