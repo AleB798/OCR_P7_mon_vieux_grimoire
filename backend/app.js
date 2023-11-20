@@ -26,7 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//app.use(cors()); //  Middleware pour communiquer sur des domaines différents ??
+//app.use(cors());
 
 app.use(bodyParser.json());
 

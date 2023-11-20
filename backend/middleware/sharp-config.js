@@ -3,7 +3,7 @@ const fs = require('fs').promises;
 
 const compressImage = (req, res, next) => {
   if (req.file) {
-    const name = req.file.filename.split('.')[0]; // Récupérer le nom du fichier sans l'extension
+    const name = req.file.filename.split('.')[0]; // Get only the file name
     const extension = 'webp';
 
     const newFilename = `${name}_${Date.now()}.${extension}`;
