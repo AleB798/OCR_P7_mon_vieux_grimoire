@@ -9,7 +9,7 @@ const userRoutes = require('./routes/user');
 const path = require('path');
 
 //connect to MongoDB
-mongoose.connect('mongodb+srv://AlEx0709:zcv1FcZYZn0hAdR6@cluster0.kfwc86a.mongodb.net/?retryWrites=true&w=majority',
+mongoose.connect(process.env.DB_URI,
   { useNewUrlParser: true,
     useUnifiedTopology: true })
   .then(() => console.log('Connexion à MongoDB réussie !'))
