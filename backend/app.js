@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
+//const bodyParser = require('body-parser');
 
 //routing
 const bookRoutes = require('./routes/book');
@@ -15,7 +15,7 @@ mongoose.connect(process.env.DB_URI,
   .then(() => console.log('Connexion à MongoDB réussie !'))
   .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-  const app = express();
+  const app = express(); // create express app
   app.use(express.json());
 
 // CORS
@@ -26,9 +26,7 @@ app.use((req, res, next) => {
   next();
 });
 
-//app.use(cors());
-
-app.use(bodyParser.json());
+//app.use(bodyParser.json());
 
 //Routes
 app.use('/api/books', bookRoutes);

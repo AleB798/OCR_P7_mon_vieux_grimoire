@@ -100,34 +100,6 @@ exports.getBestBooks = (req, res, next) => {
 };
 
 //PUT (Update a book)
-// exports.modifyBook = (req, res, next) => {
-//   const bookObject = req.file ? {
-//       ...JSON.parse(req.body.book),
-//       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-//   } : { ...req.body };
-
-//   delete bookObject._userId;
-
-//   Book.findOne({_id: req.params.id})
-//       .then((book) => {
-//           if (book.userId != req.auth.userId) {
-//               res.status(403).json({ message : 'Not authorized'});
-//           } else {
-//               Book.updateOne({ _id: req.params.id}, { ...bookObject, _id: req.params.id})
-//               .then(() => 
-//                 res.status(200).json({message : 'Livre modifié!'})
-//               )
-//               .catch(error => 
-//                 res.status(401).json({ error })
-//               );
-//           }
-//       })
-//       .catch((error) => {
-//           res.status(400).json({ error });
-//       });
-// };
-
-//PUT (Update a book)
 exports.modifyBook = (req, res, next) => {
   const bookId = req.params.id;
   const bookObject = req.file ? {
@@ -139,10 +111,10 @@ exports.modifyBook = (req, res, next) => {
 
   Book.findOne({_id: bookId})
       .then((book) => {
-          // Utilisateur actuel est le propriétaire du livre
+          // Check if the User has create the book/own the book
           if (book.userId === req.auth.userId) {
 
-              // Supprimer l'ancienne image si elle existe
+              // Remove old image 
               if (book.imageUrl) {
                 const oldFilename = book.imageUrl.split('/images/')[1];
                 fs.unlink(`images/${oldFilename}`, (err) => {
@@ -152,7 +124,7 @@ exports.modifyBook = (req, res, next) => {
                 });
               }
 
-              // Mettre à jour les informations du livre avec la nouvelle image
+              // Upadate information with new image
               Book.updateOne({ _id: bookId}, { ...bookObject, _id: bookId})
                 .then(() => 
                   res.status(200).json({message : 'Livre modifié!'})
@@ -162,7 +134,7 @@ exports.modifyBook = (req, res, next) => {
                 );
                 
           } else {
-              // Utilisateur actuel n'est pas le propriétaire du livre
+              // If the User doesn't own the book
               res.status(403).json({ message : 'Not authorized'});
           }
       })

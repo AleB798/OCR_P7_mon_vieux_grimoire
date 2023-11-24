@@ -18,7 +18,6 @@ const compressImage = (req, res, next) => {
         req.file.path = `images/${newFilename}`;
         req.file.filename = newFilename;
         req.file.mimetype = 'image/webp';
-        console.log(req.file);
 
         next();
       })
